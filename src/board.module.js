@@ -18,6 +18,11 @@ const Board = {
     // This 2 dimensional array keeps track of the pieces previous moves.
     prev: [...Array(8)].map(() => Array(8).fill(0)),
 
+    // Creates the board for the dom
+    generate(){
+        return [...Array(8)].map(() => Array(8).fill(''));
+    },
+
     getInitialCoords(cell) {
         this.initialX = cell.x;
         this.initialY = cell.y;
@@ -76,8 +81,20 @@ const Board = {
         path.unshift([this.initialX, this.initialY]);
 
         return path;
-    }
+    },
+
+    resetBoard() {
+        this.initialX = null;
+        this.initialY = null;
+        this.finalX = null;
+        this.finalY = null;
+        this.board = {};
+        this.movesq = [];
+        this.prev = [...Array(8)].map(() => Array(8).fill(0));
+    },
 }
 
 function knightMoves () {
 }
+
+export default Board;
