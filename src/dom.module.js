@@ -8,6 +8,11 @@ let getSquareData = (x, y) => {
     return document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
 }
 
+const util = document.getElementById('util');
+const status = document.getElementById('status');
+
+
+
 const createBoard = (board = Board.generate()) => {
     const boardDiv = document.getElementById('board-grid');
 
@@ -32,10 +37,10 @@ const createBoard = (board = Board.generate()) => {
 
             square.dataset.color = square.classList;
             square.classList.add('square');
-            square.dataset.row = i;
-            square.dataset.column = y;
-            square.dataset.x = i;
-            square.dataset.y = y;
+            square.dataset.row = y;
+            square.dataset.column = i;
+            square.dataset.x = y;
+            square.dataset.y = i;
 
             row.appendChild(square);
         }
@@ -43,6 +48,8 @@ const createBoard = (board = Board.generate()) => {
         boardDiv.appendChild(row);
     }
 }
+
+
 
 let resetAll = () => {
     Board.resetBoard();
@@ -53,12 +60,78 @@ let resetAll = () => {
             square.style.backgroundColor = 'black';
         }
     })
+
+    util.textContent = '';
 }
 
 let setEndSquare = () => {
+    status.textContent = 'Select your destination';
     getSquares().forEach(square => {
-        if*
+        if(square.style.backgroundColor === '#FE9000'){
+            Board.resetEnd();
+            if(square.classList.contains('white')){
+                square.style.backgroundColor = 'antiquewhite';
+            } else {
+                square.style.backgroundColor = 'black';
+            }
+        }
+        square.addEventListener('click', clickHandler, true)
     })
+}
+
+let clickHandler = (e) => {
+    status.textContent = '';
+    if (Board.checkIfValidDestination(e.target)){
+        Board.getFinalCoords(e.target);
+        let destination = getSquareData(e.target.dataset.x, e.target.dataset.y);
+        destination.style.backgroundColor = "#FE9000";
+        getSquares().forEach(square => {
+            square.removeEventListener('click', clickHandler, true);
+        })
+    }
+}
+
+let setKnightStart = () => {
+    status.textContent = 'Select your Starting Point';
+    getSquares().forEach(square => {
+        square.addEventListener('click', addStartingSquare, true);
+    })
+}
+
+let addStartingSquare = (e) => {
+    status.textContent = '';
+    resetAll()
+    let start = getSquareData(e.target.dataset.x, e.target.dataset.y);
+    Board.getInitialCoords(start);
+    Board.getPossibleMoves(Board.initialX, Board.initialY);
+    console.log(Board)
+    start.style.backgroundColor = '#5DA271';
+    getSquares().forEach(square => {
+        square.removeEventListener('click', addStartingSquare, true);
+    })
+}
+
+let setRandomPositions = () => {
+    resetAll();
+    let x = Math.floor(Math.random() * 8);
+    let y = Math.floor(Math.random() * 8);
+
+    let randomStart = getSquareData(x, y);
+    randomStart.style.backgroundColor = '#5DA271';
+    Board.getInitialCoords(randomStart);
+    Board.getPossibleMoves(Board.initialX, Board.initialY);
+
+    x = Math.floor(Math.random() * 8);
+    y = Math.floor(Math.random() * 8);
+    let randomEnd = getSquareData(x, y);
+    Board.getFinalCoords(randomEnd);
+    randomEnd.style.backgroundColor = "#FE9000";
+}
+
+let runSimulation = () => {
+    let path = Board.findPath();
+    util.textContent = `The Knights path: ${JSON.stringify(path)}`;
+    return console.log(Board.findPath());
 }
 
 createBoard();

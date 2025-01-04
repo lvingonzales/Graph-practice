@@ -23,18 +23,23 @@ const Board = {
         return [...Array(8)].map(() => Array(8).fill(''));
     },
 
-    getInitialCoords(cell) {
-        this.initialX = cell.x;
-        this.initialY = cell.y;
+    getInitialCoords(square) {
+        this.initialX = Number(square.dataset.x);
+        this.initialY = Number(square.dataset.y);
 
         this.movesq = [];
         this.movesq.push([this.initialX, this.initialY]);
         this.board[JSON.stringify([this.initialX, this.initialY])] = 1;
     },
 
-    getFinalCoords(cell) {
-        this.finalX = cell.x;
-        this.finalY = cell.y;
+    checkIfValidDestination(square) {
+        if(typeof square.dataset.x === 'undefined'){return false;}
+        return true;
+    },
+
+    getFinalCoords(square) {
+        this.finalX = Number(square.dataset.x);
+        this.finalY = Number(square.dataset.y);
     },
 
 
@@ -92,6 +97,11 @@ const Board = {
         this.movesq = [];
         this.prev = [...Array(8)].map(() => Array(8).fill(0));
     },
+
+    resetEnd() {
+        this.finalX = null;
+        this.finalY = null;
+    }
 }
 
 function knightMoves () {
