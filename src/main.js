@@ -1,5 +1,4 @@
 import "./style.css";
+import eventListeners from "./dom.module";
 
-let test = document.createElement ("p");
-test.textContent = "TEST";
-document.body.append (test);
+eventListeners.addListeners();
